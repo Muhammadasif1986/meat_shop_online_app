@@ -8,10 +8,7 @@ from app.core.security import hash_password, verify_password, create_access_toke
 from app.schemas.auth import SendOTPRequest, VerifyOTPRequest, RefreshTokenRequest, UserUpdateRequest, UserResponse
 from app.models.user import User, UserRole
 from app.services.auth import AuthService
-from app.core.config import UPLOADS_DIR
-from pathlib import Path
-import uuid
-import shutil
+from app.services.storage import storage, ALLOWED_TYPES
 
 
 class AdminLoginRequest(BaseModel):
@@ -118,21 +115,27 @@ async def upload_avatar(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    allowed = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp", "image/gif": ".gif"}
-    ext = allowed.get(file.content_type)
-    if not ext:
+    if file.content_type not in ALLOWED_TYPES:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Only JPG, PNG, WEBP or GIF images are allowed")
 
-    upload_dir = UPLOADS_DIR / "avatars"
-    upload_dir.mkdir(parents=True, exist_ok=True)
+    if storage.enabled:
+        avatar_url = await storage.upload_avatar(file)
+        if not avatar_url:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to upload avatar")
+    else:
+        from app.core.config import UPLOADS_DIR
+        from pathlib import Path
+        import uuid, shutil
 
-    filename = f"{uuid.uuid4().hex}{ext}"
-    dest = upload_dir / filename
+        upload_dir = UPLOADS_DIR / "avatars"
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        filename = f"{uuid.uuid4().hex}{ALLOWED_TYPES[file.content_type]}"
+        dest = upload_dir / filename
+        with dest.open("wb") as out:
+            shutil.copyfileobj(file.file, out)
+        avatar_url = f"/uploads/avatars/{filename}"
 
-    with dest.open("wb") as out:
-        shutil.copyfileobj(file.file, out)
-
-    current_user.avatar_url = f"/uploads/avatars/{filename}"
+    current_user.avatar_url = avatar_url
     await db.flush()
 
     return {

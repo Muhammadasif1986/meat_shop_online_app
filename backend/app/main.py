@@ -9,6 +9,7 @@ from app.core.config import settings, UPLOADS_DIR
 from app.core.database import engine, Base
 from app.api.v1 import router as api_router
 from pathlib import Path
+import os
 
 
 @asynccontextmanager
@@ -57,7 +58,8 @@ app.include_router(api_router)
 
 uploads_dir = UPLOADS_DIR
 uploads_dir.mkdir(parents=True, exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
+if os.path.isdir(uploads_dir):
+    app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 
 @app.get("/health")

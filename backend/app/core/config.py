@@ -23,6 +23,9 @@ class Settings(BaseSettings):
 
     FIREBASE_CREDENTIALS_PATH: str = "./firebase-credentials.json"
 
+    SUPABASE_URL: str = ""
+    SUPABASE_SERVICE_ROLE_KEY: str = ""
+
     CLOUDINARY_CLOUD_NAME: str = ""
     CLOUDINARY_API_KEY: str = ""
     CLOUDINARY_API_SECRET: str = ""
