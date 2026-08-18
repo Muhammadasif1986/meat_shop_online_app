@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: agms-api
+    runtime: docker
+    repo: https://github.com/your-github-username/agms-backend.git
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: DEBUG
+        value: "false"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_SYNC
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: CORS_ORIGINS
+        value: '["https://agms-admin.vercel.app"]'

@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - api
+    networks:
+      - agms-network
+
+  api:
+    image: ghcr.io/your-org/agms-api:latest
+    env_file: ../backend/.env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:${DB_PASSWORD}@postgres:5432/agms
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    networks:
+      - agms-network
+
+  celery_worker:
+    image: ghcr.io/your-org/agms-api:latest
+    command: celery -A app.core.celery_app worker --loglevel=info
+    env_file: ../backend/.env
+    restart: unless-stopped
+    networks:
+      - agms-network
+
+  celery_beat:
+    image: ghcr.io/your-org/agms-api:latest
+    command: celery -A app.core.celery_app beat --loglevel=info
+    env_file: ../backend/.env
+    restart: unless-stopped
+    networks:
+      - agms-network
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: agms
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - agms-network
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redisdata:/data
+    restart: unless-stopped
+    networks:
+      - agms-network
+
+volumes:
+  pgdata:
+  redisdata:
+
+networks:
+  agms-network:
+    driver: bridge
