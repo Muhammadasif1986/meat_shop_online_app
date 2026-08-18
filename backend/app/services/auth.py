@@ -26,7 +26,7 @@ class AuthService:
         except Exception:
             AuthService._dev_otp_store[phone] = otp
 
-        if settings.DEBUG:
+        if settings.DEBUG or getattr(settings, "ALLOW_DEBUG_OTP", False):
             print(f"[SMS] OTP for {phone}: {otp}")
             return {"expires_in": 300, "delivered": True, "reason": "debug"}
 

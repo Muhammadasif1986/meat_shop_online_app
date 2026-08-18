@@ -25,7 +25,7 @@ export default function AnalyticsPage() {
   return (
     <DashboardLayout>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Analytics</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Analytics</h1>
         <select className="border rounded-lg px-4 py-2 text-sm" value={days} onChange={e => setDays(Number(e.target.value))}>
           <option value={7}>Last 7 days</option>
           <option value={30}>Last 30 days</option>

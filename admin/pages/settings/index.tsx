@@ -28,7 +28,7 @@ export default function SettingsPage() {
 
   return (
     <DashboardLayout>
-      <h1 className="text-2xl font-bold mb-6">Settings</h1>
+      <h1 className="text-xl sm:text-2xl font-bold mb-6">Settings</h1>
 
       <div className="space-y-6 max-w-2xl">
         {/* Language */}

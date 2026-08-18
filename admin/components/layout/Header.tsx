@@ -1,13 +1,13 @@
 'use client';
 
-import { Bell, LogOut, User, Globe } from 'lucide-react';
+import { Bell, LogOut, User, Globe, Menu } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/auth-store';
 import { useOrderAlerts } from '@/lib/store/order-alerts';
 import { useTranslation } from '@/lib/i18n/context';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function Header() {
+export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const { user, logout } = useAuthStore();
   const { t, locale, setLocale } = useTranslation();
   const { unreadCount, recent, markAllRead } = useOrderAlerts();
@@ -31,11 +31,18 @@ export default function Header() {
   if (!mounted) return null;
 
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
-      <div className="flex items-center gap-4">
-        <h2 className="text-lg font-semibold text-gray-800">{t('header.welcome')}, {user?.name || 'Admin'}</h2>
+    <header className="h-14 lg:h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6">
+      <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+        <button
+          onClick={onMenuClick}
+          className="p-2 hover:bg-gray-100 rounded-lg lg:hidden"
+          aria-label="Open menu"
+        >
+          <Menu size={20} className="text-gray-600" />
+        </button>
+        <h2 className="text-base sm:text-lg font-semibold text-gray-800 truncate">{t('header.welcome')}, {user?.name || 'Admin'}</h2>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         {/* New Orders Bell */}
         <div ref={alertsRef} className="relative">
           <button
@@ -54,7 +61,7 @@ export default function Header() {
             )}
           </button>
           {alertsOpen && (
-            <div className="absolute right-0 mt-1 w-80 bg-white border rounded-lg shadow-lg z-50 overflow-hidden">
+            <div className="absolute right-0 mt-1 w-72 sm:w-80 bg-white border rounded-lg shadow-lg z-50 overflow-hidden">
               <div className="px-4 py-2 border-b text-sm font-semibold text-gray-700">
                 New Orders Pulldown
               </div>
@@ -88,7 +95,7 @@ export default function Header() {
         <div ref={ref} className="relative">
           <button
             onClick={() => setOpen(!open)}
-            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg text-sm"
+            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 hover:bg-gray-100 rounded-lg text-sm"
           >
             <Globe size={18} className="text-gray-600" />
             <span className="text-gray-600">{locale === 'ur' ? 'اردو' : 'EN'}</span>
@@ -111,10 +118,10 @@ export default function Header() {
           )}
         </div>
 
-        <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg">
+        <div className="hidden md:flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg">
           <User size={20} className="text-gray-600" />
           <span className="text-sm text-gray-600">{user?.email}</span>
-        </button>
+        </div>
         <button onClick={logout} className="p-2 hover:bg-gray-100 rounded-full">
           <LogOut size={20} className="text-gray-600" />
         </button>

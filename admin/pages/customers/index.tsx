@@ -18,10 +18,10 @@ export default function CustomersPage() {
 
   return (
     <DashboardLayout>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Customers</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold">Customers</h1>
         <input
-          className="border rounded-lg px-4 py-2 text-sm w-64"
+          className="border rounded-lg px-4 py-2 text-sm w-full sm:w-64"
           placeholder="Search by name or phone..."
           value={search} onChange={e => setSearch(e.target.value)}
         />

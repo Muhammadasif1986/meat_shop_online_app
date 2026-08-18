@@ -24,7 +24,7 @@ export default function ReviewsPage() {
 
   return (
     <DashboardLayout>
-      <h1 className="text-2xl font-bold mb-6">Reviews</h1>
+      <h1 className="text-xl sm:text-2xl font-bold mb-6">Reviews</h1>
 
       {isLoading ? (
         <p className="text-gray-500">Loading...</p>

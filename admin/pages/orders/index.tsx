@@ -70,10 +70,10 @@ export default function OrdersPage() {
 
   return (
     <DashboardLayout>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Orders</h1>
+      <div className="flex items-center justify-between mb-6 gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold">Orders</h1>
         <select
-          className="border rounded-lg px-4 py-2 text-sm"
+          className="border rounded-lg px-3 py-2 text-sm"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >

@@ -111,10 +111,10 @@ export default function ProductsPage() {
 
   return (
     <DashboardLayout>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Products</h1>
+      <div className="flex items-center justify-between mb-6 gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold">Products</h1>
         <button onClick={() => { setShowForm(!showForm); setEditId(null); resetForm(); }}
-          className="bg-red-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-800">
+          className="bg-red-900 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-800 whitespace-nowrap">
           {showForm ? 'Cancel' : '+ Add Product'}
         </button>
       </div>
