@@ -14,7 +14,11 @@ class AuthService:
         self.db = db
 
     async def send_otp(self, phone: str) -> dict:
-        otp = "123456" if settings.DEBUG else str(random.randint(100000, 999999))
+        otp = (
+            "123456"
+            if settings.DEBUG or getattr(settings, "ALLOW_DEBUG_OTP", False)
+            else str(random.randint(100000, 999999))
+        )
 
         try:
             from app.core.redis import redis_client

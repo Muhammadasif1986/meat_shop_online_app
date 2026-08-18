@@ -102,41 +102,111 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   const SizedBox(height: 24),
 
                   const Text('Select Weight', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 8),
-                  Row(
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
                     children: [
-                      ...kgOptions.map((kg) => Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: ChoiceChip(label: Text('${kg == 0.5 ? "500" : kg == 1 ? "1" : "2"}kg'), selected: _selectedKg == kg, onSelected: (_) => setState(() { _selectedKg = kg; _customKgController.clear(); })),
-                      )),
-                      Expanded(
-                        child: SizedBox(
-                          height: 36,
+                      ...kgOptions.map((kg) {
+                        final selected = _selectedKg == kg;
+                        return ChoiceChip(
+                          label: Text(kg < 1 ? '${(kg * 1000).round()} gm' : '$kg kg'),
+                          selected: selected,
+                          showCheckmark: false,
+                          selectedColor: AppColors.primary,
+                          backgroundColor: AppColors.surface,
+                          labelStyle: TextStyle(
+                            color: selected ? Colors.white : AppColors.textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide(
+                              color: selected ? AppColors.primary : AppColors.lightGray,
+                            ),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          onSelected: (_) => setState(() {
+                            _selectedKg = kg;
+                            _customKgController.clear();
+                          }),
+                        );
+                      }),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.lightGray),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.edit_outlined, color: AppColors.gray, size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
                           child: TextField(
                             controller: _customKgController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: 'Custom kg',
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            decoration: const InputDecoration(
+                              hintText: 'Custom weight',
+                              border: InputBorder.none,
                               isDense: true,
+                              contentPadding: EdgeInsets.symmetric(vertical: 12),
                             ),
                             onChanged: (v) {
                               final kg = double.tryParse(v);
-                              if (kg != null) setState(() => _selectedKg = kg);
+                              if (kg != null && kg > 0) setState(() => _selectedKg = kg);
                             },
                           ),
                         ),
-                      ),
-                    ],
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Text('kg', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.primary)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Order range: ${product.minOrderKg < 1 ? "${(product.minOrderKg * 1000).round()} gm" : "${product.minOrderKg} kg"} – ${product.maxOrderKg < 1 ? "${(product.maxOrderKg * 1000).round()} gm" : "${product.maxOrderKg} kg"}',
+                    style: const TextStyle(fontSize: 12, color: AppColors.gray),
                   ),
                   const SizedBox(height: 24),
 
                   const Text('Cut Type', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Wrap(
                     spacing: 8,
-                    children: product.cutOptions.map((cut) => ChoiceChip(label: Text(cutLabels[cut] ?? cut), selected: _selectedCut == cut, onSelected: (_) => setState(() => _selectedCut = cut))).toList(),
+                    runSpacing: 8,
+                    children: product.cutOptions.map((cut) {
+                      final selected = _selectedCut == cut;
+                      return ChoiceChip(
+                        label: Text(cutLabels[cut] ?? cut),
+                        selected: selected,
+                        showCheckmark: false,
+                        selectedColor: AppColors.primary,
+                        backgroundColor: AppColors.surface,
+                        labelStyle: TextStyle(
+                          color: selected ? Colors.white : AppColors.textSecondary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(
+                            color: selected ? AppColors.primary : AppColors.lightGray,
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        onSelected: (_) => setState(() => _selectedCut = cut),
+                      );
+                    }).toList(),
                   ),
                   const SizedBox(height: 24),
 

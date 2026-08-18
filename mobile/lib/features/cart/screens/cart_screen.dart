@@ -66,7 +66,7 @@ class CartScreen extends ConsumerWidget {
                               onPressed: () => ref.read(cartProvider.notifier).updateQuantity(i, item.weightKg - 0.5),
                               padding: EdgeInsets.zero, constraints: const BoxConstraints(),
                             ),
-                            Text('${item.weightKg.toStringAsFixed(1)} kg', style: const TextStyle(fontWeight: FontWeight.w600)),
+                            Text(item.weightKg < 1 ? '${(item.weightKg * 1000).round()} gm' : '${item.weightKg.toStringAsFixed(1)} kg', style: const TextStyle(fontWeight: FontWeight.w600)),
                             IconButton(
                               icon: const Icon(Icons.add_circle_outline, size: 20),
                               onPressed: () => ref.read(cartProvider.notifier).updateQuantity(i, item.weightKg + 0.5),
