@@ -57,7 +57,10 @@ async def add_process_time_header(request: Request, call_next):
 app.include_router(api_router)
 
 uploads_dir = UPLOADS_DIR
-uploads_dir.mkdir(parents=True, exist_ok=True)
+try:
+    uploads_dir.mkdir(parents=True, exist_ok=True)
+except OSError:
+    pass
 if os.path.isdir(uploads_dir):
     app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 

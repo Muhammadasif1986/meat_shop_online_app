@@ -1,6 +1,8 @@
 from pathlib import Path
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from typing import List
+import json
 import os
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
@@ -39,7 +41,25 @@ class Settings(BaseSettings):
     RATE_LIMIT_PER_MINUTE: int = 100
     RATE_LIMIT_AUTH_PER_MINUTE: int = 5
 
-    CORS_ORIGINS: List[str] = ["http://localhost:3000"]
+    cors_origins: str = "http://localhost:3000"
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v):
+        return v
+
+    @property
+    def CORS_ORIGINS(self) -> List[str]:
+        raw = self.cors_origins
+        if isinstance(raw, str):
+            try:
+                parsed = json.loads(raw)
+                if isinstance(parsed, list):
+                    return parsed
+            except (json.JSONDecodeError, TypeError):
+                pass
+            return [o.strip() for o in raw.split(",") if o.strip()]
+        return raw
 
     UPLOADS_DIR: Path = UPLOADS_DIR
 
