@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select, func, case, delete
+from sqlalchemy import select, func, case, delete, or_
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
@@ -738,6 +738,16 @@ async def admin_delete_rider(
     rider = result.scalar_one_or_none()
     if not rider:
         raise HTTPException(status_code=404, detail="Rider not found")
+    linked = await db.execute(
+        select(Order.id).where(
+            or_(Order.user_id == rider_id, Order.rider_id == rider_id)
+        ).limit(1)
+    )
+    if linked.scalar_one_or_none():
+        raise HTTPException(
+            status_code=400,
+            detail="This rider has order history and cannot be deleted. You can deactivate them from the riders list instead.",
+        )
     await db.delete(rider)
     await db.flush()
     return {"success": True}
