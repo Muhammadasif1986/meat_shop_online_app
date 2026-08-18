@@ -3,6 +3,7 @@ services:
     name: agms-api
     runtime: docker
     repo: https://github.com/Muhammadasif1986/meat_shop_online_app.git
+    rootDir: backend
     plan: free
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
